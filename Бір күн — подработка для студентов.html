@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Бір күн — подработка на день</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Manrope:wght@400;600;800&display=swap">
+<style>
+:root{--bg:#F3F7FA;--card:#fff;--ink:#14213D;--mute:#5B6B82;--line:#DCE5EE;--sky:#1E9BD7;--sun:#FFC72C;--ok:#1F9D6B;--bad:#C8412F;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0E1626;--card:#16223A;--ink:#EAF1F8;--mute:#9DB0C8;--line:#26365A;--sky:#4DB8EE;--ok:#3DC48C;--bad:#F07A66}}
+:root[data-theme="dark"]{--bg:#0E1626;--card:#16223A;--ink:#EAF1F8;--mute:#9DB0C8;--line:#26365A;--sky:#4DB8EE;--ok:#3DC48C;--bad:#F07A66}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 Manrope,system-ui,sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+h1,h2,h3{font-family:Unbounded,Manrope,sans-serif;margin:0}
+.hero{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.logo{width:44px;height:44px;border-radius:50%;background:var(--sun);display:grid;place-items:center;font:700 20px Unbounded,sans-serif;color:#14213D;flex:none}
+h1{font-size:22px;line-height:1.1}
+.sub{color:var(--mute);font-size:14px;margin:2px 0 0}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:14px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px}
+.stat b{display:block;font:700 20px Unbounded,sans-serif}
+.stat span{font-size:12px;color:var(--mute)}
+.tabs{display:flex;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:4px;margin-bottom:16px}
+.tabs button{flex:1;border:0;background:none;color:var(--mute);font:600 14px Manrope,sans-serif;padding:10px 6px;border-radius:999px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
+.chips{display:flex;gap:6px;overflow-x:auto;margin-bottom:12px;padding-bottom:4px}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;font:600 13px Manrope,sans-serif;white-space:nowrap;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--sky);border-color:var(--sky);color:#fff}
+.task{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:10px}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.task h3{font-size:15px;line-height:1.3}
+.pay{font:700 16px Unbounded,sans-serif;white-space:nowrap}
+.meta{color:var(--mute);font-size:13px;margin:6px 0}
+.badge{display:inline-block;font:600 12px Manrope,sans-serif;padding:2px 9px;border-radius:999px;background:var(--line);color:var(--ink)}
+.badge.ok{background:var(--ok);color:#fff}.badge.sun{background:var(--sun);color:#14213D}
+.btn{border:0;border-radius:10px;background:var(--sky);color:#fff;font:700 14px Manrope,sans-serif;padding:10px 16px;cursor:pointer}
+.btn.alt{background:var(--sun);color:#14213D}.btn.ghost{background:none;border:1px solid var(--line);color:var(--ink)}
+form{display:grid;gap:10px;margin-top:10px}
+label{font-size:13px;font-weight:600;display:grid;gap:4px}
+input,select,textarea{font:400 16px Manrope,sans-serif;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);width:100%}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.check{display:flex;gap:8px;align-items:flex-start;font-weight:400}.check input{width:auto;margin-top:4px}
+.note{font-size:13px;color:var(--mute)}
+.err{color:var(--bad);font-size:13px;font-weight:600}
+.app{display:flex;justify-content:space-between;align-items:center;gap:8px;border-top:1px solid var(--line);padding:8px 0;font-size:14px}
+.empty{text-align:center;color:var(--mute);padding:30px 10px;border:1px dashed var(--line);border-radius:14px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:999px;font-weight:600;font-size:14px;z-index:9}
+@media(max-width:480px){.two{grid-template-columns:1fr}.stat b{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero"><div class="logo">1</div><div><h1>Бір күн</h1><p class="sub">Подработка на день для студентов и школьников Тараза</p></div></div>
+  <div class="stats" id="stats"></div>
+  <div class="tabs" role="tablist">
+    <button role="tab" data-tab="find" aria-selected="true">Найти подработку</button>
+    <button role="tab" data-tab="post" aria-selected="false">Я работодатель</button>
+  </div>
+  <div id="view"></div>
+  <p class="note" style="margin-top:24px">Демо-версия: данные хранятся в вашем браузере. Оплата и выплаты показаны в тестовом режиме. Комиссия сервиса 12%.</p>
+</div>
+<div id="toast" class="toast" hidden></div>
+<script>
+const COMMISSION=0.12;
+const CATS=["Мероприятия","Кафе и магазины","Склад и доставка","Репетиторство","Другое"];
+const seed=[
+{id:1,title:"Промоутер на открытие кафе",cat:"Мероприятия",pay:6000,date:"Сб, 11:00–16:00",place:"Центр, Тараз",desc:"Раздача листовок и приглашение гостей.",phone:"+7 700 000 00 01",age:16,status:"open",apps:[]},
+{id:2,title:"Помощник на складе",cat:"Склад и доставка",pay:8000,date:"Вс, 9:00–15:00",place:"Мкр. Талас",desc:"Раскладка и подсчёт товара.",phone:"+7 700 000 00 02",age:18,status:"open",apps:[]},
+{id:3,title:"Официант на банкет",cat:"Кафе и магазины",pay:7000,date:"Пт, 18:00–23:00",place:"Банкет-холл «Алтын»",desc:"Форма выдаётся. Опыт не нужен.",phone:"+7 700 000 00 03",age:18,status:"open",apps:[]},
+{id:4,title:"Репетитор по математике (7 класс)",cat:"Репетиторство",pay:3000,date:"Вт и Чт, 17:00",place:"Онлайн",desc:"Нужен студент 2+ курса.",phone:"+7 700 000 00 04",age:18,status:"open",apps:[]}];
+let tasks=load(),tab="find",cat="Все",openForm=null;
+function load(){try{const s=localStorage.getItem("birkun");if(s)return JSON.parse(s)}catch(e){}return JSON.parse(JSON.stringify(seed))}
+function save(){try{localStorage.setItem("birkun",JSON.stringify(tasks))}catch(e){}}
+const $=s=>document.querySelector(s);
+const fmt=n=>n.toLocaleString("ru-RU")+" ₸";
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function toast(t){const e=$("#toast");e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,2500)}
+function stats(){
+ const apps=tasks.reduce((a,t)=>a+t.apps.length,0),done=tasks.filter(t=>t.status==="done");
+ const com=done.reduce((a,t)=>a+Math.round(t.pay*COMMISSION),0);
+ $("#stats").innerHTML=[[tasks.length,"задач"],[apps,"откликов"],[done.length,"выполнено"],[fmt(com),"комиссия"]].map(([v,l])=>`<div class="stat"><b>${v}</b><span>${l}</span></div>`).join("");
+}
+function badge(t){const m={open:["Открыта",""],taken:["Студент найден","sun"],paid:["Оплачено, в работе","sun"],done:["Выполнено","ok"]}[t.status];return `<span class="badge ${m[1]}">${m[0]}</span>`}
+function render(){
+ stats();
+ document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===tab));
+ $("#view").innerHTML=tab==="find"?findView():postView();
+}
+function findView(){
+ const list=tasks.filter(t=>t.status==="open"&&(cat==="Все"||t.cat===cat));
+ const chips=["Все",...CATS].map(c=>`<button class="chip" aria-pressed="${c===cat}" onclick="setCat('${c}')">${c}</button>`).join("");
+ const cards=list.length?list.map(t=>`<div class="task"><div class="row"><h3>${esc(t.title)}</h3><div class="pay">${fmt(t.pay)}</div></div>
+ <div class="meta">${esc(t.date)} · ${esc(t.place)}<br>${esc(t.desc)}<br>Возраст: от ${t.age} лет · Откликов: ${t.apps.length}</div>
+ ${openForm===t.id?applyForm(t):`<button class="btn" onclick="openApply(${t.id})">Откликнуться</button>`}</div>`).join(""):`<div class="empty">Пока нет открытых задач в этой категории. Загляните позже или выберите «Все».</div>`;
+ return `<div class="chips">${chips}</div>${cards}`;
+}
+function applyForm(t){return `<form onsubmit="apply(event,${t.id})">
+ <div class="two"><label>Имя<input name="name" required></label><label>Телефон<input name="phone" type="tel" required placeholder="+7"></label></div>
+ <label>Возраст<input name="age" type="number" min="1" max="99" required></label>
+ <label class="check"><input type="checkbox" name="parent"> Мне нет 18 лет, родитель или опекун согласен на работу</label>
+ <div class="err" id="err"></div>
+ <div><button class="btn">Отправить отклик</button> <button type="button" class="btn ghost" onclick="openApply(null)">Отмена</button></div></form>`}
+function postView(){
+ const opts=CATS.map(c=>`<option>${c}</option>`).join("");
+ const form=`<div class="task"><h3>Новая задача</h3><form onsubmit="post(event)">
+ <label>Что нужно сделать<input name="title" required placeholder="Например: помощник на мероприятие"></label>
+ <div class="two"><label>Категория<select name="cat">${opts}</select></label><label>Оплата, ₸<input name="pay" type="number" min="1000" required></label></div>
+ <div class="two"><label>Когда<input name="date" required placeholder="Сб, 11:00–16:00"></label><label>Где<input name="place" required></label></div>
+ <label>Описание<textarea name="desc" rows="2"></textarea></label>
+ <div class="two"><label>Телефон<input name="phone" type="tel" required></label><label>Минимальный возраст<select name="age"><option>18</option><option>16</option></select></label></div>
+ <div class="note">Школьники 14–17 лет только на лёгкую работу и с согласия родителей.</div>
+ <div><button class="btn alt">Опубликовать задачу</button></div></form></div>`;
+ const mine=tasks.filter(t=>t.id>4||t.apps.length||t.status!=="open");
+ const items=mine.length?mine.map(manage).join(""):`<div class="empty">Ваши задачи и отклики появятся здесь.</div>`;
+ return form+`<h2 style="font-size:16px;margin:18px 0 10px">Задачи и отклики</h2>`+items;
+}
+function manage(t){
+ let body="";
+ if(t.status==="open")body=t.apps.length?t.apps.map((a,i)=>`<div class="app"><span><b>${esc(a.name)}</b>, ${a.age} лет · ${esc(a.phone)}</span><button class="btn" onclick="pick(${t.id},${i})">Выбрать</button></div>`).join(""):`<div class="note">Откликов пока нет.</div>`;
+ if(t.status==="taken")body=`<div class="app"><span>Выбран: <b>${esc(t.worker.name)}</b>, ${esc(t.worker.phone)}</span><button class="btn alt" onclick="payTask(${t.id})">Оплатить ${fmt(t.pay)}</button></div><div class="note">Деньги хранятся в сервисе и уходят студенту после выполнения.</div>`;
+ if(t.status==="paid")body=`<div class="app"><span>В работе: <b>${esc(t.worker.name)}</b></span><button class="btn" onclick="finish(${t.id})">Работа выполнена</button></div>`;
+ if(t.status==="done")body=`<div class="note">Студент получил ${fmt(t.pay-Math.round(t.pay*COMMISSION))}, комиссия сервиса ${fmt(Math.round(t.pay*COMMISSION))}.</div>`;
+ return `<div class="task"><div class="row"><h3>${esc(t.title)}</h3>${badge(t)}</div><div class="meta">${esc(t.date)} · ${fmt(t.pay)}</div>${body}</div>`;
+}
+function setCat(c){cat=c;render()}
+function openApply(id){openForm=id;render()}
+function apply(e,id){e.preventDefault();const f=new FormData(e.target),t=tasks.find(x=>x.id===id),age=+f.get("age");
+ const err=m=>{$("#err").textContent=m};
+ if(age<16)return err("Подработка доступна с 16 лет.");
+ if(age<t.age)return err("Для этой задачи нужен возраст от "+t.age+" лет.");
+ if(age<18&&!f.get("parent"))return err("Нужно согласие родителя или опекуна.");
+ t.apps.push({name:f.get("name"),phone:f.get("phone"),age});save();openForm=null;render();toast("Отклик отправлен. Работодатель свяжется с вами.")}
+function post(e){e.preventDefault();const f=Object.fromEntries(new FormData(e.target));
+ tasks.push({id:Date.now(),title:f.title,cat:f.cat,pay:+f.pay,date:f.date,place:f.place,desc:f.desc,phone:f.phone,age:+f.age,status:"open",apps:[]});save();e.target.reset();render();toast("Задача опубликована")}
+function pick(id,i){const t=tasks.find(x=>x.id===id);t.worker=t.apps[i];t.status="taken";save();render();toast("Студент выбран")}
+function payTask(id){tasks.find(x=>x.id===id).status="paid";save();render();toast("Оплата принята (тестовый режим)")}
+function finish(id){tasks.find(x=>x.id===id).status="done";save();render();toast("Выплата студенту отправлена")}
+document.querySelectorAll(".tabs button").forEach(b=>b.onclick=()=>{tab=b.dataset.tab;render()});
+render();
+</script>
+</body>
+</html>
